@@ -31,7 +31,7 @@ interface Input {
 
 interface Options {
   apiType: "openai" | "azure"
-  apiBase: "string"
+  apiBase: string
   apiKey: string
   apiVersion: string
   model: string
@@ -126,19 +126,19 @@ export const actions = [
   {
     title: "ChatGPTx: revise",
     icon: "symbol:wand.and.stars", // icon: "iconify:uil:edit",
-    requirements: ["text","option-revise=1"],
+    requirements: ["text", "option-revise=1"],
     code: async (input: Input, options: Options) => chat(input, options, "revise"),
   },
   {
     title: "ChatGPTx: polish",
     icon: "symbol:paintpalette.fill", // icon: "iconify:lucide:stars",
-    requirements: ["text","option-polish=1"],
+    requirements: ["text", "option-polish=1"],
     code: async (input: Input, options: Options) => chat(input, options, "polish"),
   },
   {
     title: "ChatGPTx: translate",
     icon: "symbol:arrow.up.left.and.down.right.magnifyingglass", // icon: "iconify:system-uicons:translate",
-    requirements: ["text","option-translate=1"],
+    requirements: ["text", "option-translate=1"],
     code: async (input: Input, options: Options) => chat(input, options, "translate"),
   },
 ]
