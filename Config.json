@@ -1,0 +1,82 @@
+{
+  "name": "ChatGPTx",
+  "icon": "iconify:ri:openai-fill",
+  "icon options": {
+    "preserve color": false
+  },
+  "identifier": "com.damnever.popclipext.ChatGPTx",
+  "description": "PopClip extension for revising, polishing, and translating texts, powered by ChatGPT. The output will be pasted/appended or previewed.",
+  "popclip version": 4096,
+  "javascript file": "main.js",
+  "options": [
+    {
+      "identifier": "apiType",
+      "label": "API Type",
+      "type": "multiple",
+      "description": "The API type.",
+      "default value": "openai",
+      "values": [
+        "openai",
+        "azure"
+      ]
+    },
+    {
+      "identifier": "apiBase",
+      "label": "API Base",
+      "type": "string",
+      "description": "The API base URL, azure ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions.",
+      "default value": "https://api.openai.com/v1"
+    },
+    {
+      "identifier": "apiKey",
+      "label": "API Key",
+      "type": "string",
+      "description": "The API Key for /chat/completions.",
+    },
+    {
+      "identifier": "apiVersion",
+      "label": "API Version, azure only",
+      "type": "string",
+      "description": "The API version for /chat/completions.",
+      "default value": "2023-05-15"
+    },
+    {
+      "identifier": "model",
+      "label": "Model",
+      "type": "string",
+      "description": "The model, such as gpt-35-turbo or something else.",
+      "default value": "gpt-3.5-turbo"
+    },
+    {
+      "identifier": "revise",
+      "label": "Revise",
+      "type": "boolean",
+      "description": "Revise revises the text.",
+      "inset": true
+    },
+    {
+      "identifier": "polish",
+      "label": "Polish",
+      "type": "boolean",
+      "description": "Polish correct the grammar and polish the text.",
+      "inset": true
+    },
+    {
+      "identifier": "translate",
+      "label": "Translate",
+      "type": "boolean",
+      "description": "Translate translates the text into Chinese by default.",
+      "inset": true
+    },
+    {
+      "identifier": "prompts",
+      "label": "Custom Prompts",
+      "type": "string",
+      "description": "Customize prompts for revising, polishing, or translating texts. Separate each action on a separate line, for example: [revise] Revise the text.\n[polish] Polish the text.",
+      "default value": "",
+    }
+  ],
+  "entitlements": [
+    "network"
+  ],
+}
