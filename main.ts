@@ -83,7 +83,7 @@ function constructClientOptions(options: Options): object {
   throw new Error(`unsupported api type: ${options.apiType}`);
 }
 
-const chat = async (input: Input, options: Options, action: AllowedActions) => {
+async function chat(input: Input, options: Options, action: AllowedActions) {
   if (!options[action]) {
     popclip.showText(`action disabled: ${action}`);
     return
@@ -114,6 +114,7 @@ The input text being used for this task is enclosed within triple quotation mark
       popclip.pasteText(`\n\n${answer}`, { restore: true })
       popclip.showSuccess()
     } else {
+      popclip.copyText(answer)
       popclip.showText(answer, { preview: true })
     }
   } catch (e) {
