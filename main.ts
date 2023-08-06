@@ -1,8 +1,6 @@
 // @ts-nocheck
 import axios from "axios";
 
-// TODO: history???
-
 interface Message {
   role: "user" | "system" | "assistant"
   content: string
@@ -16,37 +14,12 @@ interface Response {
   }
 }
 
-// Doc: https://pilotmoon.github.io/PopClip-Extensions/interfaces/Input.html
-// Source: https://github.com/pilotmoon/PopClip-Extensions/blob/master/popclip.d.ts
-interface Input {
-  // content: PasteboardContent
-  // data: { emails: RangedStrings; nonHttpUrls: RangedStrings; paths: RangedStrings; urls: RangedStrings }
-  html: string
-  markdown: string
-  matchedText: string
-  rtf: string
-  text: string
-  xhtml: string
-}
-
-interface Options {
-  apiType: "openai" | "azure"
-  apiBase: string
-  apiKey: string
-  apiVersion: string
-  model: string
-  revise: boolean
-  polish: boolean
-  translate: boolean
-  prompts: string
-}
-
-type AllowedActions = "revise" | "polish" | "translate"
+type AllowedActions = "chat" | "revise" | "polish" | "translate"
 
 const defaultPrompts: ReadonlyMap<string, string> = new Map(Object.entries({
   "revise": "Please revise the text to make it clearer, more concise, and more coherent, and please list the changes and briefly explain why (NOTE: do not translate the content).",
   "polish": "Please correct the grammar and polish the text while adhering as closely as possible to the original intent (NOTE: do not translate the content).",
-  "translate": "Please translate the text into Chinese and only provide me with the translated content.",
+  "translate": "Please translate the text into Chinese and only provide me with the translated content without formating.",
 }))
 
 function getPrompt(action: AllowedActions, customPrompts: string): string {
@@ -83,6 +56,35 @@ function constructClientOptions(options: Options): object {
   throw new Error(`unsupported api type: ${options.apiType}`);
 }
 
+function isTerminalApplication(appName: string): boolean {
+  return appName === "iTerm2" || appName === "Terminal"
+}
+
+// Doc: https://pilotmoon.github.io/PopClip-Extensions/interfaces/Input.html
+// Source: https://github.com/pilotmoon/PopClip-Extensions/blob/master/popclip.d.ts
+interface Input {
+  // content: PasteboardContent
+  // data: { emails: RangedStrings; nonHttpUrls: RangedStrings; paths: RangedStrings; urls: RangedStrings }
+  html: string
+  markdown: string
+  matchedText: string
+  rtf: string
+  text: string
+  xhtml: string
+}
+
+interface Options {
+  apiType: "openai" | "azure"
+  apiBase: string
+  apiKey: string
+  apiVersion: string
+  model: string
+  revise: boolean
+  polish: boolean
+  translate: boolean
+  prompts: string
+}
+
 async function chat(input: Input, options: Options, action: AllowedActions) {
   if (!options[action]) {
     popclip.showText(`action disabled: ${action}`);
@@ -111,7 +113,12 @@ The input text being used for this task is enclosed within triple quotation mark
 
     // Ref: https://pilotmoon.github.io/PopClip-Extensions/interfaces/PopClip.html
     if (popclip.context.canPaste) { // Ref: https://pilotmoon.github.io/PopClip-Extensions/interfaces/Context.html
-      popclip.pasteText(`\n\n${answer}`, { restore: true })
+      let toBePasted = `\n\n${answer}\n`
+      if (!isTerminalApplication(popclip.context.appName) && popclip.context.canCopy) {
+        // Prevent the original selected text from being replaced.
+        toBePasted = `${input.text}\n\n${answer}\n`
+      }
+      popclip.pasteText(toBePasted, { restore: true })
       popclip.showSuccess()
     } else {
       popclip.copyText(answer)
@@ -125,20 +132,20 @@ The input text being used for this task is enclosed within triple quotation mark
 
 export const actions = [
   {
-    title: "ChatGPTx: revise",
-    icon: "symbol:wand.and.stars", // icon: "iconify:uil:edit",
+    title: "ChatGPTx: revise text",
+    icon: "symbol:r.square.fill", // icon: "iconify:uil:edit",
     requirements: ["text", "option-revise=1"],
     code: async (input: Input, options: Options) => chat(input, options, "revise"),
   },
   {
-    title: "ChatGPTx: polish",
-    icon: "symbol:paintpalette.fill", // icon: "iconify:lucide:stars",
+    title: "ChatGPTx: polish text",
+    icon: "symbol:p.square.fill", // icon: "iconify:lucide:stars",
     requirements: ["text", "option-polish=1"],
     code: async (input: Input, options: Options) => chat(input, options, "polish"),
   },
   {
-    title: "ChatGPTx: translate",
-    icon: "symbol:arrow.up.left.and.down.right.magnifyingglass", // icon: "iconify:system-uicons:translate",
+    title: "ChatGPTx: translate text",
+    icon: "symbol:t.square.fill", // icon: "iconify:system-uicons:translate",
     requirements: ["text", "option-translate=1"],
     code: async (input: Input, options: Options) => chat(input, options, "translate"),
   },
