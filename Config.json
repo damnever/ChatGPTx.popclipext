@@ -5,7 +5,7 @@
     "preserve color": false
   },
   "identifier": "com.damnever.popclipext.ChatGPTx",
-  "description": "PopClip extension for revising, polishing, and translating texts, powered by ChatGPT. The output will be pasted/appended or previewed.",
+  "description": "PopClip extension for revising, polishing, and translating texts with the help of ChatGPT. The extension can either paste the result directly into the active application or copy and preview(with possible truncation) the result.",
   "popclip version": 4096,
   "javascript file": "main.js",
   "options": [
@@ -13,7 +13,7 @@
       "identifier": "apiType",
       "label": "API Type",
       "type": "multiple",
-      "description": "The API type.",
+      "description": "The type of API or services being used.",
       "default value": "openai",
       "values": [
         "openai",
@@ -24,55 +24,55 @@
       "identifier": "apiBase",
       "label": "API Base",
       "type": "string",
-      "description": "The API base URL, azure ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions.",
+      "description": "The base URL for chat completions API(/chat/completions).(Azure: https://{your-resource-name}.openai.azure.com/openai/deployments/{deployment-id})",
       "default value": "https://api.openai.com/v1"
     },
     {
       "identifier": "apiKey",
       "label": "API Key",
       "type": "string",
-      "description": "The API Key for /chat/completions.",
+      "description": "The API Key for authentication .",
     },
     {
       "identifier": "apiVersion",
-      "label": "API Version, azure only",
+      "label": "API Version (Azure)",
       "type": "string",
-      "description": "The API version for /chat/completions.",
-      "default value": "2023-05-15"
+      "description": "The API version to use, which follows the YYYY-MM-DD format. Azure only.",
+      "default value": "2023-07-01-preview"
     },
     {
       "identifier": "model",
       "label": "Model",
       "type": "string",
-      "description": "The model, such as gpt-35-turbo or something else.",
+      "description": "The model to use with the chat completions API(/chat/completions), required by openai.",
       "default value": "gpt-3.5-turbo"
     },
     {
       "identifier": "revise",
       "label": "Revise",
       "type": "boolean",
-      "description": "Revise revises the text.",
+      "description": "Enable this to help revising texts.",
       "inset": true
     },
     {
       "identifier": "polish",
       "label": "Polish",
       "type": "boolean",
-      "description": "Polish correct the grammar and polish the text.",
+      "description": "Enable this to help correcting the grammar and polishing texts.",
       "inset": true
     },
     {
       "identifier": "translate",
       "label": "Translate",
       "type": "boolean",
-      "description": "Translate translates the text into Chinese by default.",
+      "description": "Enable this to help translating texts into different languages(Chinese by default).",
       "inset": true
     },
     {
       "identifier": "prompts",
       "label": "Custom Prompts",
       "type": "string",
-      "description": "Customize prompts for revising, polishing, or translating texts. Separate each action on a separate line, for example: [revise] Revise the text.\n[polish] Polish the text.",
+      "description": "Customize prompts for revising, polishing, or translating texts. Separate each action on a separate line, for example: [translate] Please translate the text into Chinese and only provide me with the translated content.\n[revise] revise the text.",
       "default value": "",
     }
   ],
