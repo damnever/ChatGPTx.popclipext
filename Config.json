@@ -5,7 +5,7 @@
     "preserve color": false
   },
   "identifier": "com.damnever.popclipext.ChatGPTx",
-  "description": "PopClip extension for revising, polishing, and translating texts with the help of ChatGPT. The extension can either paste the result directly into the active application or copy and preview(with possible truncation) the result.",
+  "description": "PopClip extension for revising, polishing, and translating texts, as well as performing arbitrary operations with the assistance of ChatGPT. The extension can either paste the result directly into the active application or copy and preview(with possible truncation) the result.",
   "popclip version": 4096,
   "javascript file": "main.js",
   "options": [
