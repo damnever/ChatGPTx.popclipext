@@ -31,7 +31,7 @@
       "identifier": "apiKey",
       "label": "API Key",
       "type": "string",
-      "description": "The API Key for authentication .",
+      "description": "The API Key for authentication.",
     },
     {
       "identifier": "apiVersion",
@@ -48,32 +48,85 @@
       "default value": "gpt-3.5-turbo"
     },
     {
+      "identifier": "opinionedActions",
+      "label": "❤ OPINIONED ACTIONS",
+      "type": "heading",
+      "description": "The primary language is used by default, click with shift(⇧) to use the secondary language.",
+    },
+    {
       "identifier": "revise",
-      "label": "Revise",
+      "label": "Revise Texts with Reasons",
+      "type": "heading"
+    },
+    {
+      "identifier": "reviseEnabled",
+      "label": "Enable",
       "type": "boolean",
-      "description": "Enable this to help revising texts.",
+      "inset": true
+    },
+    {
+      "identifier": "revisePrimaryLanguage",
+      "label": "Primary Lang",
+      "type": "string",
+      "default value": "English",
+      "inset": true
+    },
+    {
+      "identifier": "reviseSecondaryLanguage",
+      "label": "Secondary Lang",
+      "type": "string",
+      "default value": "Chinese",
       "inset": true
     },
     {
       "identifier": "polish",
-      "label": "Polish",
+      "label": "Polish Texts",
+      "type": "heading"
+    },
+    {
+      "identifier": "polishEnabled",
+      "label": "Enable",
       "type": "boolean",
-      "description": "Enable this to help correcting the grammar and polishing texts.",
+      "inset": true
+    },
+    {
+      "identifier": "polishPrimaryLanguage",
+      "label": "Primary Lang",
+      "type": "string",
+      "default value": "English",
+      "inset": true
+    },
+    {
+      "identifier": "polishSecondaryLanguage",
+      "label": "Secondary Lang",
+      "type": "string",
+      "default value": "Chinese",
       "inset": true
     },
     {
       "identifier": "translate",
-      "label": "Translate",
+      "label": "Translate Texts",
+      "type": "heading",
+    },
+    {
+      "identifier": "translateEnabled",
+      "label": "Enable",
       "type": "boolean",
-      "description": "Enable this to help translating texts into different languages(Chinese by default).",
       "inset": true
     },
     {
-      "identifier": "prompts",
-      "label": "Custom Prompts",
+      "identifier": "translatePrimaryLanguage",
+      "label": "Primary Lang",
       "type": "string",
-      "description": "Customize prompts for revising, polishing, or translating texts. Separate each action on a separate line, for example: [translate] Please translate the text into Chinese and only provide me with the translated content.\n[revise] revise the text.",
-      "default value": "",
+      "default value": "Chinese",
+      "inset": true
+    },
+    {
+      "identifier": "translateSecondaryLanguage",
+      "label": "Secondary Lang",
+      "type": "string",
+      "default value": "English",
+      "inset": true
     }
   ],
   "entitlements": [
