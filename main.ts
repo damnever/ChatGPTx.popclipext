@@ -2,8 +2,14 @@ import axios from "axios";
 
 // Doc: https://pilotmoon.github.io/PopClip-Extensions/interfaces/Input.html
 // Source: https://github.com/pilotmoon/PopClip-Extensions/blob/master/popclip.d.ts
+interface PasteboardContent {
+    'public.utf8-plain-text'?: string
+    'public.html'?: string
+    'public.rtf'?: string
+}
+
 interface Input {
-    // content: PasteboardContent
+    content: PasteboardContent
     // data: { emails: RangedStrings; nonHttpUrls: RangedStrings; paths: RangedStrings; urls: RangedStrings }
     html: string
     markdown: string
@@ -42,10 +48,17 @@ interface Options {
     apiKey: string
     apiVersion: string
     model: string
-    revise: boolean
-    polish: boolean
-    translate: boolean
-    prompts: string
+
+    reviseEnabled: boolean
+    revisePrimaryLanguage: string
+    reviseSecondaryLanguage: string
+    polishEnabled: boolean
+    polishPrimaryLanguage: string
+    polishSecondaryLanguage: string
+    translateEnabled: boolean
+    translatePrimaryLanguage: string
+    translateSecondaryLanguage: string
+    // prompts: string
 }
 
 // Ref: https://pilotmoon.github.io/PopClip-Extensions/interfaces/PopClip.html
@@ -77,12 +90,12 @@ type AllowedOneTimeActions = "revise" | "polish" | "translate"
 type AllowedActions = "chat" | AllowedOneTimeActions
 
 abstract class ChatGPTAction {
+    abstract beforeRequest(popclip: PopClip, input: Input, options: Options, action: AllowedActions): boolean
     abstract makeRequestData(popclip: PopClip, input: Input, options: Options, action: AllowedActions): object | null
     processResponse(popclip: PopClip, resp: APIResponse): string {
         return resp.data.choices[0].message.content.trim()
     }
     onRequestError(popclip: PopClip, e: unknown) { }
-    maybeReset(popclip: PopClip): boolean { return false }
     doCleanup(): void { }
 }
 
@@ -154,8 +167,12 @@ class ChatAction extends ChatGPTAction {
         }
     }
 
-    maybeReset(popclip: PopClip): boolean {
-        this.chatHistories.delete(popclip.context.appIdentifier)
+    beforeRequest(popclip: PopClip, input: Input, options: Options, action: AllowedActions): boolean {
+        if (popclip.modifiers.shift) {
+            this.chatHistories.delete(popclip.context.appIdentifier)
+            popclip.showText(`${popclip.context.appName}'s chat history has been cleared`)
+            return false
+        }
         return true
     }
 
@@ -184,30 +201,33 @@ class ChatAction extends ChatGPTAction {
 }
 
 class OneTimeAction extends ChatGPTAction {
-    static defaultPrompts: ReadonlyMap<string, string> = new Map(Object.entries({
-        "revise": "Please revise the text to make it clearer, more concise, and more coherent, and please list the changes and briefly explain why (NOTE: do not translate the content).",
-        "polish": "Please correct the grammar and polish the text while adhering as closely as possible to the original intent (NOTE: do not translate the content).",
-        "translate": "Please translate the text into Chinese and only provide me with the translated content without formating.",
-    }))
-
-    private getPrompt(action: AllowedOneTimeActions, customPrompts: string): string {
-        if (customPrompts !== "") {
-            const prompts = customPrompts.split("\n")
-            for (let i = 0; i < prompts.length; i++) {
-                const parts = prompts[i].trim().split("]")
-                if (parts[0].substring(1) == action) {
-                    return parts.slice(1).join("]")
-                }
-            }
+    private getPrompt(action: AllowedOneTimeActions, language: string): string {
+        switch (action) {
+            case "revise":
+                return `Please revise the text to make it clearer, more concise, and more coherent, and please list the changes and briefly explain why (IMPORTANT: reply with ${language} language).`
+            case "polish":
+                return `Please correct the grammar and polish the text while adhering as closely as possible to the original intent (IMPORTANT: reply with ${language} language).`
+            case "translate":
+                return `Please translate the text into ${language} and only provide me with the translated content without formating.`
         }
-        return OneTimeAction.defaultPrompts.get(action)!
+    }
+
+    beforeRequest(popclip: PopClip, input: Input, options: Options, action: AllowedActions): boolean {
+        return options[`${action}Enabled`]
     }
 
     makeRequestData(popclip: PopClip, input: Input, options: Options, action: AllowedActions): object | null {
         if (action === "chat") {
             return null
         }
-        const prompt = this.getPrompt(action as AllowedOneTimeActions, options.prompts)
+
+        // FIXME: why does this conditional/ternary operator not work?
+        // const language = popclip.modifiers.shift ? options[`${action}PrimaryLanguage`] : options[`${action}SecondaryLanguage`]
+        let language = options[`${action}PrimaryLanguage`]
+        if (popclip.modifiers.shift) {
+            language = options[`${action}SecondaryLanguage`]
+        }
+        const prompt = this.getPrompt(action as AllowedOneTimeActions, language)
         return {
             model: options.model,
             messages: [
@@ -263,14 +283,8 @@ function doCleanup() {
 async function doAction(popclip: PopClip, input: Input, options: Options, action: AllowedActions) {
     doCleanup()
 
-    if (action !== "chat" && !options[action]) {
-        popclip.showText(`action disabled: ${action}`);
-        return
-    }
-
     const actionImpl = chatGPTActions.get(action)!
-    if (popclip.modifiers.shift && actionImpl.maybeReset(popclip)) { // Reset.
-        popclip.showSuccess()
+    if (!actionImpl.beforeRequest(popclip, input, options, action)) {
         return
     }
 
@@ -298,34 +312,38 @@ async function doAction(popclip: PopClip, input: Input, options: Options, action
     } catch (e) {
         actionImpl.onRequestError(popclip, e)
 
-        popclip.showFailure()
+        // popclip.showFailure()
         popclip.showText(String(e))
     }
 }
 
 export const actions = [
     {
-        title: "ChatGPTx: do what you want. (click with shift(⇧) to force clear the history for this app)",
+        title: "ChatGPTx: do what you want (click with shift(⇧) to force clear the history for this app)",
         // icon: "symbol:arrow.up.message.fill", // icon: "iconify:uil:edit",
         requirements: ["text"],
+        capture_html: true,
         code: async (input: Input, options: Options) => doAction(popclip, input, options, "chat"),
     },
     {
-        title: "ChatGPTx: revise text",
+        title: "ChatGPTx: revise text (click with shift(⇧) to use the secondary language)",
         icon: "symbol:r.square.fill", // icon: "iconify:uil:edit",
-        requirements: ["text", "option-revise=1"],
+        requirements: ["text", "option-reviseEnabled=1"],
+        capture_html: true,
         code: async (input: Input, options: Options) => doAction(popclip, input, options, "revise"),
     },
     {
-        title: "ChatGPTx: polish text",
+        title: "ChatGPTx: polish text (click with shift(⇧) to use the secondary language)",
         icon: "symbol:p.square.fill", // icon: "iconify:lucide:stars",
-        requirements: ["text", "option-polish=1"],
+        requirements: ["text", "option-polishEnabled=1"],
+        capture_html: true,
         code: async (input: Input, options: Options) => doAction(popclip, input, options, "polish"),
     },
     {
-        title: "ChatGPTx: translate text",
+        title: "ChatGPTx: translate text (click with shift(⇧) to use the secondary language)",
         icon: "symbol:t.square.fill", // icon: "iconify:system-uicons:translate",
-        requirements: ["text", "option-translate=1"],
+        requirements: ["text", "option-translateEnabled=1"],
+        capture_html: true,
         code: async (input: Input, options: Options) => doAction(popclip, input, options, "translate"),
     },
 ]
