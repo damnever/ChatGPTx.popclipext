@@ -59,6 +59,10 @@ interface Options {
     translateEnabled: boolean
     translatePrimaryLanguage: string
     translateSecondaryLanguage: string
+    summarizeEnabled: boolean
+    summarizePrimaryLanguage: string
+    summarizeSecondaryLanguage: string
+
     // prompts: string
 }
 
@@ -94,8 +98,7 @@ interface APIResponse {
     }
 }
 
-
-type AllowedOneTimeActions = "revise" | "polish" | "translate"
+type AllowedOneTimeActions = "revise" | "polish" | "translate" | "summarize"
 type AllowedActions = "chat" | AllowedOneTimeActions
 
 abstract class ChatGPTAction {
@@ -217,6 +220,8 @@ class OneTimeAction extends ChatGPTAction {
                 return `Please correct the grammar and polish the text while adhering as closely as possible to the original intent (IMPORTANT: reply with ${language} language).`
             case "translate":
                 return `Please translate the text into ${language} and only provide me with the translated content without formating.`
+            case "summarize":
+                return `Please summarize the text briefly, making sure to include all the important points (IMPORTANT: reply with ${language} language).`
         }
     }
 
@@ -273,10 +278,6 @@ function isTerminalApplication(appName: string): boolean {
 }
 
 const chatGPTActions: Map<AllowedActions, ChatAction | OneTimeAction> = new Map();
-chatGPTActions.set("chat", new ChatAction())
-chatGPTActions.set("revise", new OneTimeAction())
-chatGPTActions.set("polish", new OneTimeAction())
-chatGPTActions.set("translate", new OneTimeAction())
 
 function doCleanup() {
     for (const [_, actionImpl] of chatGPTActions) {
@@ -326,29 +327,41 @@ async function doAction(popclip: PopClip, input: Input, options: Options, action
     }
 }
 
+chatGPTActions.set("chat", new ChatAction())
+chatGPTActions.set("revise", new OneTimeAction())
+chatGPTActions.set("polish", new OneTimeAction())
+chatGPTActions.set("translate", new OneTimeAction())
+chatGPTActions.set("summarize", new OneTimeAction())
+
 export const actions = [
     {
-        title: "ChatGPTx: do what you want (click with shift(⇧) to force clear the history for this app)",
+        title: "ChatGPTx: do what you want (click while holding shift(⇧) to force clear the history for this app)",
         // icon: "symbol:arrow.up.message.fill", // icon: "iconify:uil:edit",
         requirements: ["text"],
         code: async (input: Input, options: Options, context: Context) => doAction(popclip, input, options, "chat"),
     },
     {
-        title: "ChatGPTx: revise text (click with shift(⇧) to use the secondary language)",
+        title: "ChatGPTx: revise text (click while holding shift(⇧) to use the secondary language)",
         icon: "symbol:r.square.fill", // icon: "iconify:uil:edit",
         requirements: ["text", "option-reviseEnabled=1"],
         code: async (input: Input, options: Options, context: Context) => doAction(popclip, input, options, "revise"),
     },
     {
-        title: "ChatGPTx: polish text (click with shift(⇧) to use the secondary language)",
+        title: "ChatGPTx: polish text (click while holding shift(⇧) to use the secondary language)",
         icon: "symbol:p.square.fill", // icon: "iconify:lucide:stars",
         requirements: ["text", "option-polishEnabled=1"],
         code: async (input: Input, options: Options, context: Context) => doAction(popclip, input, options, "polish"),
     },
     {
-        title: "ChatGPTx: translate text (click with shift(⇧) to use the secondary language)",
+        title: "ChatGPTx: translate text (click while holding shift(⇧) to use the secondary language)",
         icon: "symbol:t.square.fill", // icon: "iconify:system-uicons:translate",
         requirements: ["text", "option-translateEnabled=1"],
         code: async (input: Input, options: Options, context: Context) => doAction(popclip, input, options, "translate"),
+    },
+    {
+        title: "ChatGPTx: summarize text (click while holding shift(⇧) to use the secondary language)",
+        icon: "symbol:s.square.fill", // icon: "iconify:system-uicons:translate",
+        requirements: ["text", "option-summarizeEnabled=1"],
+        code: async (input: Input, options: Options, context: Context) => doAction(popclip, input, options, "summarize"),
     },
 ]
