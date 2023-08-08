@@ -10,10 +10,15 @@
   "javascript file": "main.js",
   "options": [
     {
+      "identifier": "basicOptions",
+      "label": "❤ OpenAI API Options",
+      "type": "heading",
+      "description": "Options for OpenAI chat completions API. Azure base URL: https://{resource-name}.openai.azure.com/openai/deployments/{deployment-id}",
+    },
+    {
       "identifier": "apiType",
       "label": "API Type",
       "type": "multiple",
-      "description": "The type of API or services being used.",
       "default value": "openai",
       "values": [
         "openai",
@@ -22,30 +27,33 @@
     },
     {
       "identifier": "apiBase",
-      "label": "API Base",
+      "label": "API Base URL",
       "type": "string",
-      "description": "The base URL for chat completions API(/chat/completions).(Azure: https://{your-resource-name}.openai.azure.com/openai/deployments/{deployment-id})",
       "default value": "https://api.openai.com/v1"
     },
     {
       "identifier": "apiKey",
       "label": "API Key",
       "type": "string",
-      "description": "The API Key for authentication.",
-    },
-    {
-      "identifier": "apiVersion",
-      "label": "API Version (Azure)",
-      "type": "string",
-      "description": "The API version to use, which follows the YYYY-MM-DD format. Azure only.",
-      "default value": "2023-07-01-preview"
     },
     {
       "identifier": "model",
       "label": "Model",
       "type": "string",
-      "description": "The model to use with the chat completions API(/chat/completions), required by openai.",
       "default value": "gpt-3.5-turbo"
+    },
+    {
+      "identifier": "apiVersion",
+      "label": "API Version (Azure only)",
+      "type": "string",
+      "default value": "2023-07-01-preview"
+    },
+    {
+      "identifier": "temperature",
+      "label": "Sampling Temperature",
+      "type": "string",
+      "description": ">=0, <=2. Higher values will result in a more random output, and vice versa.",
+      "default value": "1"
     },
     {
       "identifier": "opinionedActions",
