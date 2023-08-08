@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitAny": false,
+        // note es2018 requires macOS 10.14
+        // once we drop support for high sierra this can be bumped for cleaner js code
+        // (note es2018 is required for async generators)
+        "target": "es2017",
+        "lib": [
+            "es2021"
+        ],
+        // we can specify esnext lib due to polyfills in popclip
+        "skipLibCheck": true,
+        "module": "commonjs",
+        "esModuleInterop": false,
+        "moduleResolution": "node",
+    },
+    "include": [
+        "./main.ts",
+    ],
+    "ts-standard": {
+        "ignore": [
+            "**/*.js"
+        ]
+    },
+}
