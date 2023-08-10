@@ -365,3 +365,196 @@ export const actions = [
         code: async (input: Input, options: Options, context: Context) => doAction(popclip, input, options, "summarize"),
     },
 ]
+
+// Dynamic configs:
+//
+// Prompt to list languages:
+//   list top 100 languages that you can understand and generate texts in,
+//   remove all dialects, such as Chinese dialects(but do include "Chinese Simplified" and "Chinese Traditional" ),
+//   reply in JSON format using both English and their corresponding native language, e.g. [{"english": "Chinese Simplified", "native": "简体中文"}].
+//
+//   Please double check and count by yourself first.
+//
+// (Unfortunately, ChatGPT is unable to list 100 languages and I am exhausted from trying to make it accurate..)
+import * as languages from "./top-languages-from-chatgpt.json"
+const optionLanguagesValues: Array<string> = new Array()
+const optionLanguagesValueLabels: Array<string> = new Array()
+
+languages.sort((a, b) => {
+    if (a.english < b.english) {
+        return -1
+    } else if (a.english > b.english) {
+        return 1
+    }
+    return 0
+})
+languages.forEach((value) => {
+    optionLanguagesValues.push(value.english)
+    optionLanguagesValueLabels.push(value.native)
+})
+
+export const options = [
+    {
+        "identifier": "apiType",
+        "label": "API Type",
+        "type": "multiple",
+        "default value": "openai",
+        "values": [
+            "openai",
+            "azure"
+        ]
+    },
+    {
+        "identifier": "apiBase",
+        "label": "API Base URL",
+        "description": "For Azure: https://{resource-name}.openai.azure.com/openai/deployments/{deployment-id}",
+        "type": "string",
+        "default value": "https://api.openai.com/v1"
+    },
+    {
+        "identifier": "apiKey",
+        "label": "API Key",
+        "type": "string",
+    },
+    {
+        "identifier": "model",
+        "label": "Model",
+        "type": "string",
+        "default value": "gpt-3.5-turbo"
+    },
+    {
+        "identifier": "apiVersion",
+        "label": "API Version (Azure only)",
+        "type": "string",
+        "default value": "2023-07-01-preview"
+    },
+    {
+        "identifier": "temperature",
+        "label": "Sampling Temperature",
+        "type": "string",
+        "description": ">=0, <=2. Higher values will result in a more random output, and vice versa.",
+        "default value": "1"
+    },
+    {
+        "identifier": "opinionedActions",
+        "label": "❤ OPINIONED ACTIONS",
+        "type": "heading",
+        "description": "Click while holding shift(⇧) to use the secondary language.",
+    },
+    {
+        "identifier": "revise",
+        "label": "Revise Texts with Reasons",
+        "type": "heading"
+    },
+    {
+        "identifier": "reviseEnabled",
+        "label": "Enable",
+        "type": "boolean",
+        "inset": true
+    },
+    {
+        "identifier": "revisePrimaryLanguage",
+        "label": "Primary",
+        "type": "multiple",
+        "default value": "English",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    },
+    {
+        "identifier": "reviseSecondaryLanguage",
+        "label": "Secondary",
+        "type": "multiple",
+        "default value": "Chinese Simplified",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    },
+    {
+        "identifier": "polish",
+        "label": "Polish Texts",
+        "type": "heading"
+    },
+    {
+        "identifier": "polishEnabled",
+        "label": "Enable",
+        "type": "boolean",
+        "inset": true
+    },
+    {
+        "identifier": "polishPrimaryLanguage",
+        "label": "Primary",
+        "type": "multiple",
+        "default value": "English",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    },
+    {
+        "identifier": "polishSecondaryLanguage",
+        "label": "Secondary",
+        "type": "multiple",
+        "default value": "Chinese Simplified",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    },
+    {
+        "identifier": "translate",
+        "label": "Translate Texts",
+        "type": "heading"
+    },
+    {
+        "identifier": "translateEnabled",
+        "label": "Enable",
+        "type": "boolean",
+        "inset": true
+    },
+    {
+        "identifier": "translatePrimaryLanguage",
+        "label": "Primary",
+        "type": "multiple",
+        "default value": "Chinese Simplified",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    },
+    {
+        "identifier": "translateSecondaryLanguage",
+        "label": "Secondary",
+        "type": "multiple",
+        "default value": "English",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    },
+    {
+        "identifier": "summarize",
+        "label": "Summarize Texts",
+        "type": "heading"
+    },
+    {
+        "identifier": "summarizeEnabled",
+        "label": "Enable",
+        "type": "boolean",
+        "inset": true
+    },
+    {
+        "identifier": "summarizePrimaryLanguage",
+        "label": "Primary",
+        "type": "multiple",
+        "default value": "Chinese Simplified",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    },
+    {
+        "identifier": "summarizeSecondaryLanguage",
+        "label": "Secondary",
+        "type": "multiple",
+        "default value": "English",
+        "values": optionLanguagesValues,
+        "value labels": optionLanguagesValueLabels,
+        "inset": true
+    }
+]
