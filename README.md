@@ -3,7 +3,7 @@
 Features:
 - Chat with ChatGPT using any text you have selected.
     - Per application chat histories (the chat histories are only kept for contextual use and are currently hidden).
-    - The histories will expire automatically if there is no interaction with the application for 8 minutes. Click while holding the shift (⇧) key to force clear the history.
+    - The histories will expire automatically if there is no interaction with the application for 20 minutes. Click while holding the shift (⇧) key to force clear the history.
 - Opinioned actions:
     - Revising texts with reasons.
     - Polishing texts and correcting the grammar.

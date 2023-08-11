@@ -111,7 +111,7 @@ abstract class ChatGPTAction {
     doCleanup(): void { }
 }
 
-const InactiveChatHistoryResetIntervalMs = 8 * 1000 * 60 // 8 minutes.
+const InactiveChatHistoryResetIntervalMs = 20 * 1000 * 60 // 20 minutes.
 // const MaxChatHistoryLength = 50
 
 class ChatHistory {
@@ -257,7 +257,7 @@ function makeClientOptions(options: Options): object {
         return {
             "baseURL": options.apiBase,
             headers: { Authorization: `Bearer ${options.apiKey}` },
-            timeout: 10000,
+            timeout: 45000,
         }
     } else if (options.apiType === "azure") {
         // Ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions
@@ -267,7 +267,7 @@ function makeClientOptions(options: Options): object {
             params: {
                 "api-version": options.apiVersion,
             },
-            timeout: 10000,
+            timeout: 45000,
         }
     }
     throw new Error(`unsupported api type: ${options.apiType}`);
