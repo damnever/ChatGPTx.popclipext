@@ -1,6 +1,9 @@
 # A [PopClip](https://pilotmoon.com/popclip/) Extension Powered by ChatGPT
 
-Features:
+![ChatGPTx](./ChatGPTx.gif)
+
+## Features
+
 - Chat with ChatGPT using any text you have selected.
     - Per application chat histories (the chat histories are only kept for contextual use and are currently hidden).
     - The histories will expire automatically if there is no interaction with the application for 20 minutes. Click while holding the shift (⇧) key to force clear the history.
@@ -14,7 +17,11 @@ Features:
     - Special support for [the Microsoft Azure OpenAI service](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
         - Base URL format: `https://{resource-name}.openai.azure.com/openai/deployments/{deployment-id}`
 
-This extension will attempt to paste(append) the result directly into the active application if the paste command is available. If not, it will copy the result and provide a preview(with possible truncation due to the limitation of PopClip).
-
+This extension will attempt to paste(append) the result directly into the active application if the paste command is available. If not, it will copy the result and provide a preview(with possible truncation due to the current limitations of PopClip).
 
 **NOTE:** at the moment, no additional AI services or opinioned actions will be added as there are already too many, making the settings UI too crowded.
+
+
+## Thanks
+
+This extension is inspired by [chatGPTBox](https://github.com/josStorer/chatGPTBox) and [ChatGPT.popclipext](https://github.com/pilotmoon/PopClip-Extensions/tree/master/source/ChatGPT.popclipext).
