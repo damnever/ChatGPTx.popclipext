@@ -253,11 +253,12 @@ The input text being used for this task is enclosed within triple quotation mark
 }
 
 function makeClientOptions(options: Options): object {
+    const timeoutMs = 35000
     if (options.apiType === "openai") {
         return {
             "baseURL": options.apiBase,
             headers: { Authorization: `Bearer ${options.apiKey}` },
-            timeout: 45000,
+            timeout: timeoutMs,
         }
     } else if (options.apiType === "azure") {
         // Ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions
@@ -267,7 +268,7 @@ function makeClientOptions(options: Options): object {
             params: {
                 "api-version": options.apiVersion,
             },
-            timeout: 45000,
+            timeout: timeoutMs,
         }
     }
     throw new Error(`unsupported api type: ${options.apiType}`);
@@ -366,7 +367,7 @@ export const actions = [
     },
 ]
 
-// Dynamic configs:
+// Dynamic options:
 //
 // Prompt to list languages:
 //   list top 100 languages that you can understand and generate texts in,
@@ -387,13 +388,12 @@ languages.sort((a, b) => {
         return 1
     }
     return 0
-})
-languages.forEach((value) => {
+}).forEach((value) => {
     optionLanguagesValues.push(value.english)
     optionLanguagesValueLabels.push(value.native)
 })
 
-export const options = [
+const chatGPTActionsOptions: Array<any> = [
     {
         "identifier": "apiType",
         "label": "API Type",
@@ -440,121 +440,46 @@ export const options = [
         "label": "❤ OPINIONED ACTIONS",
         "type": "heading",
         "description": "Click while holding shift(⇧) to use the secondary language.",
-    },
-    {
-        "identifier": "revise",
-        "label": "Revise Texts with Reasons",
-        "type": "heading"
-    },
-    {
-        "identifier": "reviseEnabled",
-        "label": "Enable",
-        "type": "boolean",
-        "inset": true
-    },
-    {
-        "identifier": "revisePrimaryLanguage",
-        "label": "Primary",
-        "type": "multiple",
-        "default value": "English",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
-    },
-    {
-        "identifier": "reviseSecondaryLanguage",
-        "label": "Secondary",
-        "type": "multiple",
-        "default value": "Chinese Simplified",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
-    },
-    {
-        "identifier": "polish",
-        "label": "Polish Texts",
-        "type": "heading"
-    },
-    {
-        "identifier": "polishEnabled",
-        "label": "Enable",
-        "type": "boolean",
-        "inset": true
-    },
-    {
-        "identifier": "polishPrimaryLanguage",
-        "label": "Primary",
-        "type": "multiple",
-        "default value": "English",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
-    },
-    {
-        "identifier": "polishSecondaryLanguage",
-        "label": "Secondary",
-        "type": "multiple",
-        "default value": "Chinese Simplified",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
-    },
-    {
-        "identifier": "translate",
-        "label": "Translate Texts",
-        "type": "heading"
-    },
-    {
-        "identifier": "translateEnabled",
-        "label": "Enable",
-        "type": "boolean",
-        "inset": true
-    },
-    {
-        "identifier": "translatePrimaryLanguage",
-        "label": "Primary",
-        "type": "multiple",
-        "default value": "Chinese Simplified",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
-    },
-    {
-        "identifier": "translateSecondaryLanguage",
-        "label": "Secondary",
-        "type": "multiple",
-        "default value": "English",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
-    },
-    {
-        "identifier": "summarize",
-        "label": "Summarize Texts",
-        "type": "heading"
-    },
-    {
-        "identifier": "summarizeEnabled",
-        "label": "Enable",
-        "type": "boolean",
-        "inset": true
-    },
-    {
-        "identifier": "summarizePrimaryLanguage",
-        "label": "Primary",
-        "type": "multiple",
-        "default value": "Chinese Simplified",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
-    },
-    {
-        "identifier": "summarizeSecondaryLanguage",
-        "label": "Secondary",
-        "type": "multiple",
-        "default value": "English",
-        "values": optionLanguagesValues,
-        "value labels": optionLanguagesValueLabels,
-        "inset": true
     }
 ]
+
+new Array(
+    { name: "revise", primary: "English", secondary: "Chinese Simplified" },
+    { name: "polish", primary: "English", secondary: "Chinese Simplified" },
+    { name: "translate", primary: "Chinese Simplified", secondary: "English" },
+    { name: "summarize", primary: "Chinese Simplified", secondary: "English" },
+).forEach((value) => {
+    const capitalizedName = value.name.charAt(0).toUpperCase() + value.name.slice(1)
+    chatGPTActionsOptions.push(
+        {
+            "identifier": value.name,
+            "label": `${capitalizedName} Texts`,
+            "type": "heading"
+        },
+        {
+            "identifier": `${value.name}Enabled`,
+            "label": "Enable",
+            "type": "boolean",
+            "inset": true
+        },
+        {
+            "identifier": `${value.name}PrimaryLanguage`,
+            "label": "Primary",
+            "type": "multiple",
+            "default value": `${value.primary}`,
+            "values": optionLanguagesValues,
+            "value labels": optionLanguagesValueLabels,
+            "inset": true
+        },
+        {
+            "identifier": `${value.name}SecondaryLanguage`,
+            "label": "Secondary",
+            "type": "multiple",
+            "default value": `${value.secondary}`,
+            "values": optionLanguagesValues,
+            "value labels": optionLanguagesValueLabels,
+            "inset": true
+        })
+})
+
+export const options = chatGPTActionsOptions
