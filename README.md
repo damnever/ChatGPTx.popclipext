@@ -1,5 +1,9 @@
 # A [PopClip](https://pilotmoon.com/popclip/) Extension Powered by ChatGPT
 
+NOTE: Installing this extension will trigger a warning as it is not an officially [signed extension](https://github.com/pilotmoon/PopClip-Extensions#extension-signing) from Pilotmoon Software. If you have any doubts, please take the time to review the source code.
+
+Download: [**Buy Me A Coffee**](https://ko-fi.com/s/efa2b30d72) | [**Thanks, Perhaps Next Time**](https://github.com/damnever/ChatGPTx.popclipext/releases/latest/download/ChatGPTx.popclipextz)
+
 ![ChatGPTx](./ChatGPTx.gif)
 
 ## Features
