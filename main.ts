@@ -426,7 +426,7 @@ const chatGPTActionsOptions: Array<any> = [
         "identifier": "apiVersion",
         "label": "API Version (Azure only)",
         "type": "string",
-        "default value": "2023-07-01-preview"
+        "default value": "2023-12-01-preview"
     },
     {
         "identifier": "temperature",
