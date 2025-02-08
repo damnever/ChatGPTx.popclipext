@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@popclip/types": "^1.4675.0",
+    "axios": "^1.7.9"
+  }
+}

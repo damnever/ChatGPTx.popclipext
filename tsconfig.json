@@ -7,7 +7,8 @@
     // (note es2018 is required for async generators)
     "target": "es2017",
     "lib": [
-      "es2021"
+      "es2021",
+      "dom"
     ],
     // we can specify esnext lib due to polyfills in popclip
     "skipLibCheck": true,
@@ -15,13 +16,16 @@
     "esModuleInterop": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "types": [
+      "@popclip/types"
+    ]
   },
   "include": [
-    "./main.ts",
+    "./main.ts"
   ],
   "ts-standard": {
     "ignore": [
       "**/*.js"
     ]
-  },
+  }
 }
