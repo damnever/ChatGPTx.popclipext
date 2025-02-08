@@ -384,7 +384,7 @@ const chatGPTActionsOptions: Array<any> = [
     "identifier": "opinionedActions",
     "label": "NOTE",
     "type": "heading",
-    "description": "Click while holding option(⌥) to force preview instead of trying to paste first.",
+    "description": "Click while holding option(⌥) to force a preview instead of trying to paste first.",
   },
   {
     "identifier": "opinionedActions",
