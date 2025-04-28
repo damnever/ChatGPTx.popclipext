@@ -163,9 +163,9 @@ class OneTimeAction extends ChatGPTAction {
   private getPrompt(action: AllowedOneTimeActions, language: string): string {
     switch (action) {
       case "revise":
-        return `Please revise the text to improve its clarity, brevity, and coherence. Document the changes made and provide a concise explanation for each modification (IMPORTANT: reply with ${language} language).`
+        return `Please revise the text for improved clarity, brevity, and coherence. List the changes made and provide a brief explanation for each (IMPORTANT: reply with ${language} language).`
       case "polish":
-        return `Please correct the grammar and polish the text while adhering as closely as possible to the original intention (IMPORTANT: reply with ${language} language).`
+        return `Please correct any grammatical errors and enhance the text while maintaining the original intent and tone as closely as possible (IMPORTANT: reply with ${language} language).`
       case "translate":
         return `Please translate the text into ${language} and only provide me with the translated content without formating.`
       case "summarize":
